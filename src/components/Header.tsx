@@ -25,11 +25,6 @@ let items = [
     label: "Owned",
     url: "/user",
     enabled: false
-  },
-  {
-    label: "Mint",
-    url: "/mint",
-    enabled: false
   }
 ]
 
@@ -84,7 +79,7 @@ const Header = () => {
             </IconButton>
             <Box sx={{paddingRight: "25px"}}>
               <Link href="/" sx={{display: "flex"}}>
-                <img src="/media/logo.svg" alt="artblocks" height={26}></img>
+                <img src="/media/logo.png" alt="artblocks" height={26}></img>
               </Link>
             </Box>
             <Box sx={{display: {xs: "none", sm: "block"}, marginTop: "5px"}}>
