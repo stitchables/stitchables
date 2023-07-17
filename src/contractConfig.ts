@@ -24,7 +24,7 @@ export const testnetContractConfig = [
     "CONTRACT_VERSION": "V3",
     "CORE_CONTRACT_ADDRESS": "0xF104F964c5B1c68aeE6447b1C64e9030EB9c1eaF",
     "MINT_CONTRACT_ADDRESS": "0xA51Ef7A57Ca427eB93037157d044174B1000a3B7",
-    "MEDIA_URL": "https://plottablesv3-goerli.s3.amazonaws.com",
+    "MEDIA_URL": "https://stitchables-goerli.s3.amazonaws.com",
     "TOKEN_URL": "https://token.staging.artblocks.io",
     "GENERATOR_URL": "https://generator-staging-goerli.artblocks.io",
     "EDIT_PROJECT_URL": "https://artist-staging.artblocks.io/engine/flex/projects"
