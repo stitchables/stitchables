@@ -12,6 +12,7 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility"
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
 import ImageIcon from "@mui/icons-material/Image"
+import CreateIcon from '@mui/icons-material/Create';
 import useTheme from "@mui/material/styles/useTheme"
 import TokenTraits from "components/TokenTraits"
 import Address from "components/Address"
@@ -115,6 +116,24 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
                 >
                 <Typography fontSize="14px" display={["none", "none", "block"]}>
                   Image
+                </Typography>
+              </Button>
+              <Button
+                startIcon={<CreateIcon sx={{color: "#666"}}/>}
+                sx={{
+                  fontSize: 14,
+                  textTransform: "none",
+                  marginLeft: [1, 1, 2],
+                  minWidth: [0, 0, "64px"],
+                  padding: [0, 0, "default"]
+                }}
+                onClick={() => {
+                  const embroideryUrl = contractConfig?.EMBROIDERY_URL
+                  window.open(`${embroideryUrl}/${contractAddress?.toLowerCase()}/${token.tokenId}.pes?width_mm=400&height_mm=400`)
+                }}
+              >
+                <Typography fontSize="14px" display={["none", "none", "block"]}>
+                  Embroider
                 </Typography>
               </Button>
             </Box>
