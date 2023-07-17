@@ -133,7 +133,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
                 }}
               >
                 <Typography fontSize="14px" display={["none", "none", "block"]}>
-                  Embroider
+                  Embroidery
                 </Typography>
               </Button>
             </Box>
