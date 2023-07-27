@@ -21,6 +21,9 @@ import TokenView from "components/TokenView"
 import useToken from "hooks/useToken"
 import useWindowSize from "hooks/useWindowSize"
 import { getContractConfigByAddress } from "utils/contractInfoHelper";
+import EmbroideryDownloader from "./EmbroideryDownloader";
+import {useState} from "react";
+import {Close} from "@mui/icons-material";
 
 interface Props {
   contractAddress: string
@@ -33,6 +36,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
   const { loading, error, data } = useToken(`${contractAddress.toLowerCase()}-${id}`)
   const token = data?.token
   const contractConfig = getContractConfigByAddress(contractAddress)
+  const [showEmbroideryDownloader, setShowEmbroideryDownloader] = useState(false)
 
   if (loading) {
     return <Loading/>
@@ -56,6 +60,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
 
   return token && contractConfig && (
     <Box>
+
       <Breadcrumbs aria-label="breadcrumb" sx={{marginBottom: 4}}>
         <Link href="/projects" underline="hover" sx={{color: "#666"}}>
           Home
@@ -128,8 +133,9 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
                   padding: [0, 0, "default"]
                 }}
                 onClick={() => {
-                  const embroideryUrl = contractConfig?.EMBROIDERY_URL
-                  window.open(`${embroideryUrl}/${contractAddress?.toLowerCase()}/${token.tokenId}.pes?width_mm=400&height_mm=400`)
+                  // const embroideryUrl = contractConfig?.EMBROIDERY_URL
+                  // window.open(`${embroideryUrl}/${contractAddress?.toLowerCase()}/${token.tokenId}.pes?width_mm=400&height_mm=400`)
+                  setShowEmbroideryDownloader(true);
                 }}
               >
                 <Typography fontSize="14px" display={["none", "none", "block"]}>
@@ -182,6 +188,50 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
           <TokenTraits contractAddress={contractAddress} tokenId={token.tokenId}/>
         </Grid>
       </Grid>
+
+
+      <Box sx={{
+        width: "100%",
+        height: "100%",
+        position: "fixed",
+        top: "0px",
+        left: "0px",
+        display: showEmbroideryDownloader ? "flex" : "none",
+        justifyContent: "center",
+        alignItems: "center"
+      }}>
+        <Box sx={{
+          width: "400px",
+          position: "fixed",
+          display: showEmbroideryDownloader ? "block" : "none",
+          backgroundColor: "white",
+          borderColor: "pink",
+          borderStyle: "solid",
+          borderRadius: "10px",
+          borderWidth: "5px"
+        }}>
+          <Box>
+            <Box sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}>
+              <Box sx={{
+                marginLeft: "20px"
+              }}>
+                <Typography textAlign={"center"}>
+                  Embroidery Options
+                </Typography>
+              </Box>
+              <Button onClick={() => { setShowEmbroideryDownloader(false); }}>
+                <Close/>
+              </Button>
+            </Box>
+            <EmbroideryDownloader baseUrl={`${contractConfig?.EMBROIDERY_URL}/${contractAddress?.toLowerCase()}/${token.tokenId}`}/>
+          </Box>
+        </Box>
+      </Box>
+
     </Box>
   )
 }
