@@ -7,7 +7,7 @@ import {
   Grid,
   Alert,
   Button,
-  Breadcrumbs
+  Breadcrumbs, Fade
 } from "@mui/material"
 import VisibilityIcon from "@mui/icons-material/Visibility"
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
@@ -190,47 +190,47 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
       </Grid>
 
 
-      <Box sx={{
-        width: "100%",
-        height: "100%",
-        position: "fixed",
-        top: "0px",
-        left: "0px",
-        display: showEmbroideryDownloader ? "flex" : "none",
-        justifyContent: "center",
-        alignItems: "center"
-      }}>
+      <Fade in={showEmbroideryDownloader} timeout={500}>
         <Box sx={{
-          width: "400px",
+          width: "100%",
+          height: "100%",
           position: "fixed",
-          display: showEmbroideryDownloader ? "block" : "none",
-          backgroundColor: "white",
-          borderColor: "pink",
-          borderStyle: "solid",
-          borderRadius: "10px",
-          borderWidth: "5px"
+          top: "0px",
+          left: "0px",
+          display: showEmbroideryDownloader ? "flex" : "none",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0, 0, 0, 0.5)"
         }}>
-          <Box>
-            <Box sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center"
-            }}>
+          <Box sx={{
+            width: "400px",
+            position: "fixed",
+            display: showEmbroideryDownloader ? "block" : "none",
+            backgroundColor: "white",
+            borderRadius: "10px"
+          }}>
+            <Box>
               <Box sx={{
-                marginLeft: "20px"
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center"
               }}>
-                <Typography textAlign={"center"}>
-                  Embroidery Options
-                </Typography>
+                <Box sx={{
+                  marginLeft: "20px"
+                }}>
+                  <Typography textAlign={"center"}>
+                    Embroidery Options
+                  </Typography>
+                </Box>
+                <Button onClick={() => { setShowEmbroideryDownloader(false); }}>
+                  <Close/>
+                </Button>
               </Box>
-              <Button onClick={() => { setShowEmbroideryDownloader(false); }}>
-                <Close/>
-              </Button>
+              <EmbroideryDownloader baseUrl={`${contractConfig?.EMBROIDERY_URL}/${contractAddress?.toLowerCase()}/${token.tokenId}`}/>
             </Box>
-            <EmbroideryDownloader baseUrl={`${contractConfig?.EMBROIDERY_URL}/${contractAddress?.toLowerCase()}/${token.tokenId}`}/>
           </Box>
         </Box>
-      </Box>
+      </Fade>
 
     </Box>
   )
