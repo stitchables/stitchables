@@ -215,9 +215,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
                 justifyContent: "space-between",
                 alignItems: "center"
               }}>
-                <Box sx={{
-                  marginLeft: "20px"
-                }}>
+                <Box>
                   <Typography textAlign={"center"}>
                     Embroidery Options
                   </Typography>
