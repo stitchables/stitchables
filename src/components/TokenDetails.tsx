@@ -209,7 +209,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
             backgroundColor: "white",
             borderRadius: "10px"
           }}>
-            <Box>
+            <Box sx={{padding: "20px"}}>
               <Box sx={{
                 display: "flex",
                 justifyContent: "space-between",
