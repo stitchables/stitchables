@@ -1,16 +1,36 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import Box from "@mui/material/Box"
-import {Button, Link, Typography} from "@mui/material"
-import {useContext} from "react";
+import {Button, Fade, Link, Typography} from "@mui/material"
+import {useContext, useEffect, useState} from "react";
 import {BackgroundContext} from "./Providers";
 import CustomTypography from "./CustomTypography";
+import {useAccount, useDisconnect} from "wagmi";
+import {Close} from "@mui/icons-material";
+import EmbroideryDownloader from "./EmbroideryDownloader";
+import CustomAccountModal from "./CustomAccountModal";
 
 interface Props {
   isMobile: boolean
 }
 
 const Connect = ({ isMobile = false }: Props) => {
+
+  const account = useAccount()
+
   const backgroundConfig = useContext(BackgroundContext)
+
+  const [openAccount, setOpenAccount] = useState(false)
+
+  useEffect(() => {
+    if (!account.isConnected) {
+      setOpenAccount(false);
+    }
+  }, [account.isConnected])
+
+  const customOpenAccountModal = () => {
+    setOpenAccount(true);
+  }
+
   return (
     <Box>
       <ConnectButton.Custom>
@@ -88,16 +108,9 @@ const Connect = ({ isMobile = false }: Props) => {
                 }
 
                 return (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: "25px",
-                      flexDirection: "row",
-                      justifyContent: "right"
-                    }}
-                  >
                     <Link
-                      onClick={openAccountModal}
+                      // onClick={openAccountModal}
+                      onClick={customOpenAccountModal}
                       underline={"hover"}
                       sx={{
                         justifyContent: "center",
@@ -113,29 +126,56 @@ const Connect = ({ isMobile = false }: Props) => {
                         fontSize={"25px"}
                       />
                     </Link>
-                    <Link
-                      href={`/user/${account.address}`}
-                      underline="hover"
-                      sx={{
-                        textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
-                        textDecoration: "none",
-                        '&:hover': {
-                          textDecoration: "none"
-                        }
-                      }}
-                    >
-                      <CustomTypography
-                        text={"My NFTs"}
-                        fontSize={"25px"}
-                      />
-                    </Link>
-                  </Box>
                 );
               })()}
             </div>
           );
         }}
       </ConnectButton.Custom>
+
+
+      <Fade in={openAccount} timeout={500}>
+        <Box
+          onClick={(event) => setOpenAccount(false)}
+          sx={{
+            width: "100%",
+            height: "100%",
+            position: "fixed",
+            top: "0px",
+            left: "0px",
+            display: openAccount ? "flex" : "none",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            zIndex: "1"
+          }}
+        >
+          <Box
+            onClick={ (event) => event.stopPropagation() }
+            sx={{
+              width: "400px",
+              position: "fixed",
+              display: openAccount ? "block" : "none",
+              backgroundColor: "white",
+              borderRadius: "10px"
+            }}
+          >
+            <Box sx={{padding: "20px"}}>
+              <Box sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center"
+              }}>
+                <Button onClick={() => { setOpenAccount(false); }}>
+                  <Close/>
+                </Button>
+              </Box>
+              <CustomAccountModal/>
+            </Box>
+          </Box>
+        </Box>
+      </Fade>
+
     </Box>
   )
 }
