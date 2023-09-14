@@ -46,15 +46,13 @@ interface Props {
 }
 
 const backgroundConfigs = [
-  {index: 1, colors: {primary: "#fcfbf4", secondary: "#fcfbf4", shadowPrimary: "#000000", shadowSecondary: "#0000ff"}},
-  {index: 4, colors: {primary: "#fcfbf4", secondary: "#fcfbf4", shadowPrimary: "#000000", shadowSecondary: "#0000ff"}},
-  {index: 5, colors: {primary: "#fcfbf4", secondary: "#fcfbf4", shadowPrimary: "#000000", shadowSecondary: "#0000ff"}},
-  {index: 7, colors: {primary: "#fcfbf4", secondary: "#fcfbf4", shadowPrimary: "#000000", shadowSecondary: "#0000ff"}},
-  {index: 8, colors: {primary: "#fcfbf4", secondary: "#fcfbf4", shadowPrimary: "#000000", shadowSecondary: "#0000ff"}}
-
-  // {index: 6, color: "#fcfbf4"},
-  // {index: 2, color: "#fcfbf4"},
-  // {index: 3, color: "#fcfbf4"},
+  {index: 1, colors: {primary: "#fcfbf4", secondary: "#fcfbf4", shadowPrimary: "#000000", shadowSecondary: "#32a852"}},
+  {index: 2, colors: {primary: "#fcfbf4", secondary: "#fcfbf4", shadowPrimary: "#000000", shadowSecondary: "#51D6FF"}},
+  {index: 4, colors: {primary: "#fcfbf4", secondary: "#fcfbf4", shadowPrimary: "#000000", shadowSecondary: "#fcba03"}},
+  {index: 5, colors: {primary: "#fcfbf4", secondary: "#fcfbf4", shadowPrimary: "#000000", shadowSecondary: "#eb4034"}},
+  {index: 6, colors: {primary: "#FDFCDC", secondary: "#fcfbf4", shadowPrimary: "#000000", shadowSecondary: "#F07167"}},
+  {index: 7, colors: {primary: "#fcfbf4", secondary: "#fcfbf4", shadowPrimary: "#000000", shadowSecondary: "#B97375"}},
+  {index: 8, colors: {primary: "#fcfbf4", secondary: "#fcfbf4", shadowPrimary: "#000000", shadowSecondary: "#FFC857"}}
 ]
 export const BackgroundContext = createContext(backgroundConfigs[0])
 

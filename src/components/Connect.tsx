@@ -3,6 +3,7 @@ import Box from "@mui/material/Box"
 import {Button, Link, Typography} from "@mui/material"
 import {useContext} from "react";
 import {BackgroundContext} from "./Providers";
+import CustomTypography from "./CustomTypography";
 
 interface Props {
   isMobile: boolean
@@ -46,41 +47,87 @@ const Connect = ({ isMobile = false }: Props) => {
               {(() => {
                 if (!connected) {
                   return (
-                    <Link onClick={openConnectModal} underline={"hover"}
-                          sx={{
-                            textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
-                          }}>
-                      <Typography variant={"h1"} color={backgroundConfig.colors.primary}>Connect</Typography>
+                    <Link
+                      onClick={openConnectModal}
+                      underline={"hover"}
+                      sx={{
+                        textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
+                        textDecoration: "none",
+                        '&:hover': {
+                          textDecoration: "none"
+                        }
+                      }}
+                    >
+                      <CustomTypography
+                        text={"Connect"}
+                        fontSize={"25px"}
+                      />
                     </Link>
                   );
                 }
 
                 if (chain.unsupported) {
                   return (
-                    <Link onClick={openChainModal} underline={"hover"}
-                          sx={{
-                            textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
-                          }}>
-                      <Typography variant={"h1"} color={backgroundConfig.colors.primary}>Wrong network</Typography>
+                    <Link
+                      onClick={openChainModal}
+                      underline={"hover"}
+                      sx={{
+                        textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
+                        textDecoration: "none",
+                        '&:hover': {
+                          textDecoration: "none"
+                        }
+                      }}
+                    >
+                      <CustomTypography
+                        text={"Wrong Network"}
+                        fontSize={"25px"}
+                      />
                     </Link>
                   );
                 }
 
                 return (
-                  <Box sx={{
-                    display: "flex",
-                    gap: "25px",
-                    flexDirection: "row",
-                    justifyContent: "right"
-                  }}>
-                    <Link onClick={openAccountModal} underline={"hover"} sx={{justifyContent: "center", textShadow: "#000 1px 0 20px"}}>
-                      <Typography variant={"h1"} color={backgroundConfig.colors.primary}>{account.displayName}</Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: "25px",
+                      flexDirection: "row",
+                      justifyContent: "right"
+                    }}
+                  >
+                    <Link
+                      onClick={openAccountModal}
+                      underline={"hover"}
+                      sx={{
+                        justifyContent: "center",
+                        textShadow: "#000 1px 0 20px",
+                        textDecoration: "none",
+                        '&:hover': {
+                          textDecoration: "none"
+                        }
+                      }}
+                    >
+                      <CustomTypography
+                        text={account.displayName}
+                        fontSize={"25px"}
+                      />
                     </Link>
-                    <Link href={`/user/${account.address}`} underline="hover"
-                          sx={{
-                            textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
-                          }}>
-                      <Typography variant={"h1"} color={backgroundConfig.colors.primary}>My NFTs</Typography>
+                    <Link
+                      href={`/user/${account.address}`}
+                      underline="hover"
+                      sx={{
+                        textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
+                        textDecoration: "none",
+                        '&:hover': {
+                          textDecoration: "none"
+                        }
+                      }}
+                    >
+                      <CustomTypography
+                        text={"My NFTs"}
+                        fontSize={"25px"}
+                      />
                     </Link>
                   </Box>
                 );

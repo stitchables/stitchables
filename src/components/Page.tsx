@@ -22,7 +22,7 @@ const Page = ({ children }: Props) => {
       minHeight: "100vh",
       backgroundImage: `url(${process.env.PUBLIC_URL}/media/backgrounds/bg${backgroundConfig.index}.jpg)`,
       backgroundRepeat: "repeat",
-      backgroundSize: "1000px"
+      backgroundSize: "600px"
     }}>
       <Header/>
       {children}

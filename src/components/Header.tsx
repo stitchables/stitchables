@@ -2,6 +2,7 @@ import { Box, Link, Typography } from "@mui/material"
 import Connect from "components/Connect"
 import {useContext} from "react";
 import {BackgroundContext} from "./Providers";
+import CustomTypography from "./CustomTypography";
 
 let items = [
   {
@@ -36,7 +37,6 @@ const Header = () => {
             <Link
               key={item.label}
               href={item.url}
-              // underline="hover"
               sx={{
                 paddingRight: "25px",
                 pointerEvents: item.enabled ? "auto" : "none",
@@ -45,18 +45,7 @@ const Header = () => {
                   textDecoration: "none"
                 }
             }}>
-              <Typography
-                variant={"h1"}
-                color={backgroundConfig.colors.primary}
-                sx={{
-                  textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
-                  '&:hover': {
-                    textShadow: `${backgroundConfig.colors.shadowSecondary} 0px 0px 17px`,
-                  }
-                }}
-              >
-                {item.label}
-              </Typography>
+              <CustomTypography text={item.label} fontSize={"25px"}/>
             </Link>
           ))}
         </Box>
