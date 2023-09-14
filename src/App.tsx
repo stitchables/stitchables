@@ -14,7 +14,7 @@ function App() {
       <Router>
         <Routes>
           <Route index element={<LandingPage/>}/>
-          <Route path="projects" element={<ProjectsPage/>}/>
+          <Route path="collection" element={<ProjectsPage/>}/>
           <Route path="project/:contractAddress/:projectId" element={<ProjectPage/>}/>
           <Route path="token/:contractAddress/:id" element={<TokenPage/>}/>
           <Route path="user/:walletAddress" element={<UserPage/>}/>
