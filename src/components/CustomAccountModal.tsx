@@ -1,4 +1,4 @@
-import {Button, Typography} from "@mui/material";
+import {Button, Icon, Typography} from "@mui/material";
 import Box from "@mui/material/Box";
 import {useAccount, useBalance, useDisconnect, useEnsName} from "wagmi";
 import {formatEtherFixed} from "../utils/numbers";
@@ -17,12 +17,22 @@ const CustomAccountModal = () => {
   return (
     <Box
       sx={{
-        marginTop: "-30px",
+        marginTop: "-50px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center"
       }}
     >
+
+      <Box
+        component={"img"}
+        sx={{
+          height: "50px",
+          marginY: "20px"
+        }}
+        alt={"Stitchables"}
+        src={"/media/logos/logo.png"}
+      />
 
       <Typography
         sx={{
