@@ -18,7 +18,6 @@ const Page = ({ children }: Props) => {
       paddingX: "40px",
       display: "flex",
       flexDirection: "column",
-      minWidth: "100vw",
       minHeight: "100vh",
       backgroundImage: `url(${process.env.PUBLIC_URL}/media/backgrounds/bg${backgroundConfig.index}.jpg)`,
       backgroundRepeat: "repeat",

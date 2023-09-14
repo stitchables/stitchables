@@ -100,7 +100,7 @@ const Projects = () => {
           >
             <Box
               sx={{
-                width: "500px",
+                width: "450px",
                 height: "800px",
                 borderStyle: "solid",
                 borderColor: `${backgroundConfig.colors.primary}`,
@@ -109,7 +109,7 @@ const Projects = () => {
                 display: "flex",
                 flexDirection: "column",
                 '&:hover': {
-                  background: "rgba(0, 0, 0, 0.15)"
+                  background: "rgba(0, 0, 0, 0.2)"
                 }
               }}
             >
@@ -206,7 +206,7 @@ const Projects = () => {
       }
       <Box
         sx={{
-          width: "500px",
+          width: "450px",
           height: "800px",
           borderStyle: "solid",
           borderColor: `${backgroundConfig.colors.primary}`,

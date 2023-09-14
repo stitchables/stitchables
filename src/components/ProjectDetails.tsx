@@ -68,14 +68,6 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
 
   return project && contractConfig && (
     <Box>
-      <Breadcrumbs aria-label="breadcrumb" sx={{marginBottom: 4}}>
-        <Link href="/projects" underline="hover" sx={{color: "#666"}}>
-          Home
-        </Link>
-        <Typography>
-          {project.name}
-        </Typography>
-      </Breadcrumbs>
       <Grid spacing={2} container>
         {
           token && (
