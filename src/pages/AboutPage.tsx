@@ -1,5 +1,5 @@
 import Page from "components/Page"
-import { Typography } from "@mui/material"
+import {Box, Typography} from "@mui/material"
 import {useContext} from "react";
 import {BackgroundContext} from "../components/Providers";
 
@@ -7,18 +7,27 @@ const AboutPage = () => {
   const backgroundConfig = useContext(BackgroundContext)
   return (
     <Page>
-      <Typography
-        variant={"h1"}
-        color={backgroundConfig.colors.primary}
+      <Box
         sx={{
-          textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
-          '&:hover': {
-            textShadow: `${backgroundConfig.colors.shadowSecondary} 0px 0px 17px`,
-          }
+          flexGrow: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
         }}
       >
-        ABOUT
-      </Typography>
+        <Typography
+          variant={"h1"}
+          color={backgroundConfig.colors.primary}
+          sx={{
+            textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
+            '&:hover': {
+              textShadow: `${backgroundConfig.colors.shadowSecondary} 0px 0px 17px`,
+            }
+          }}
+        >
+          COMING SOON
+        </Typography>
+      </Box>
     </Page>
   )
 }
