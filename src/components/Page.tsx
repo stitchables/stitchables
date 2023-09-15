@@ -6,6 +6,7 @@ import {
 import Header from "components/Header"
 import {useContext} from "react";
 import { BackgroundContext } from "components/Providers";
+import Footer from "./Footer";
 
 interface Props {
   children: React.ReactNode
@@ -25,6 +26,7 @@ const Page = ({ children }: Props) => {
     }}>
       <Header/>
       {children}
+      <Footer/>
     </Box>
   )
 }

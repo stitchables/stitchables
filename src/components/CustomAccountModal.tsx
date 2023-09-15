@@ -102,7 +102,7 @@ const CustomAccountModal = () => {
         </Button>
 
         <Button
-          onClick={() => window.location.href=`/user/${account.address}`}
+          href={`/user/${account.address}`}
           sx={{
             width: "115px",
             display: "flex",

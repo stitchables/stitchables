@@ -42,32 +42,7 @@ const OwnedProjects = ({ walletAddress }: Props) => {
 
   return (
     <Box>
-      <Box sx={{display:"flex", justifyContent: "space-between", alignItems: "flex-end"}}>
-        <Typography></Typography>
-        <Box sx={{display: "flex", alignItems: "center", marginRight: "25px"}}>
-          <Box>
-            {
-              !error && !loading && filteredProjects?.length > 0 &&
-              (
-              <FormControl fullWidth sx={{marginBottom: "50px"}}>
-                <NativeSelect
-                  value={orderDirection}
-                  sx={{fontSize: 14}}
-                  onChange={(e) => {
-                    setCurrentPage(0)
-                    setOrderDirection(e.target.value as OrderDirection)
-                  }}
-                >
-                  <option value={OrderDirection.DESC}>Newest</option>
-                  <option value={OrderDirection.ASC}>Oldest</option>
-                </NativeSelect>
-              </FormControl>
-              )
-            }
-          </Box>
-        </Box>
-      </Box>
-      <Box sx={{marginTop: "-100px"}}>
+      <Box>
         {
           loading ?
           (
