@@ -13,7 +13,9 @@ const countOwnedTokensQuery = (projectId: string, walletAddress: string) => `
   }`
 
 const useCountOwnedTokens = (projectId: string, walletAddress: string) => {
-  const { loading, error, data } = useQuery(gql(countOwnedTokensQuery(projectId, walletAddress)))
+  let { loading, error, data } = useQuery(gql(countOwnedTokensQuery(projectId, walletAddress)))
+
+  if (data) data = data.tokens.length
 
   return {
     loading,

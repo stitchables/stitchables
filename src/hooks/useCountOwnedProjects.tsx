@@ -24,7 +24,9 @@ const countOwnedProjectsQuery = (walletAddress: string) => `
   }`
 
 const useCountOwnedProjects = (walletAddress: string) => {
-  const { loading, error, data } = useQuery(gql(countOwnedProjectsQuery(walletAddress)))
+  let { loading, error, data } = useQuery(gql(countOwnedProjectsQuery(walletAddress)))
+
+  if (data) data = data.projects.filter((project: { tokens: string | any[] }) => project.tokens.length > 0).length
 
   return {
     loading,
