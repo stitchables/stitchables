@@ -22,8 +22,12 @@ import useToken from "hooks/useToken"
 import useWindowSize from "hooks/useWindowSize"
 import { getContractConfigByAddress } from "utils/contractInfoHelper";
 import EmbroideryDownloader from "./EmbroideryDownloader";
-import {useState} from "react";
-import {Close} from "@mui/icons-material";
+import {useContext, useState} from "react";
+import {Close, Instagram} from "@mui/icons-material";
+import CustomTypography from "./CustomTypography";
+import {BackgroundContext} from "./Providers";
+import {useEnsName} from "wagmi";
+import address from "components/Address";
 
 interface Props {
   contractAddress: string
@@ -31,18 +35,29 @@ interface Props {
 }
 
 const TokenDetails = ({ contractAddress, id }: Props) => {
-  const theme = useTheme()
-  const windowSize = useWindowSize()
-  const { loading, error, data } = useToken(`${contractAddress.toLowerCase()}-${id}`)
-  const token = data?.token
+
+  const backgroundConfig = useContext(BackgroundContext)
   const contractConfig = getContractConfigByAddress(contractAddress)
+
+  const token = useToken(`${contractAddress.toLowerCase()}-${id}`)
+
+  const ensName = useEnsName({
+    address: token.data?.token.owner.id,
+    chainId: 1
+  })
+  const shortAddress = `${token.data?.token.owner.id.slice(0, 6)}...${ token.data?.token.owner.id.slice(38, 42)}`
+
   const [showEmbroideryDownloader, setShowEmbroideryDownloader] = useState(false)
 
-  if (loading) {
-    return <Loading/>
+  if (token.loading || token.loading) {
+    return (
+      <Box>
+        <Loading/>
+      </Box>
+    )
   }
 
-  if (error) {
+  if (token.error || token.error) {
     return (
       <Box>
         <Alert severity="error">
@@ -52,142 +67,219 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
     )
   }
 
-  const width = windowSize.width > theme.breakpoints.values.md
-    ? (Math.min(windowSize.width, 1200)- 48)*0.666666
-      : windowSize.width > theme.breakpoints.values.sm
-        ? windowSize.width - 48
-        : windowSize.width - 32
+  if (!contractConfig) {
+    return (
+      <Box>
+        <Alert severity="error">
+          Contract config not found
+        </Alert>
+      </Box>
+    )
+  }
 
-  return token && contractConfig && (
+  return (
     <Box>
 
-      <Breadcrumbs aria-label="breadcrumb" sx={{marginBottom: 4}}>
-        <Link href="/projects" underline="hover" sx={{color: "#666"}}>
-          Home
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          paddingBottom: "20px"
+        }}
+      >
+        <Link
+          href={`/project/${contractAddress}/${token.data.token.project.projectId}`}
+          sx={{
+            textDecoration: "none",
+            '&:hover': {
+              textDecoration: "none"
+            }
+          }}
+        >
+          <CustomTypography text={`${token.data.token.project.name} Gallery`} fontSize={"25px"}/>
         </Link>
-        <Link href={`/project/${contractAddress}/${token.project.projectId}`} underline="hover" sx={{color: "#666"}}>
-          {token.project.name}
-        </Link>
-        <Typography>
-          {token.invocation}
-        </Typography>
-      </Breadcrumbs>
-      <Grid container spacing={2}>
-        <Grid item md={8}>
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex"
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "800px"
+          }}
+        >
           <TokenView
             contractAddress={contractAddress}
-            tokenId={token.tokenId}
-            width={width}
-            aspectRatio={token.project.aspectRatio || parseAspectRatio(token.project.scriptJSON)}
-            live
+            tokenId={token.data.token.tokenId}
+            width={800}
+            aspectRatio={token.data.token.project.aspectRatio}
+            live={true}
           />
-          <Box sx={{marginTop: 1, display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-            <Box>
-              <Typography>
-                Owned by <Address address={token.owner.id}></Address>
-              </Typography>
-            </Box>
-            <Box sx={{display: "flex", justifyContent: "space-between"}}>
-              <Button
-                startIcon={<VisibilityIcon sx={{color: "#666"}}/>}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-evenly"
+            }}
+          >
+
+            <Link
+              href={`${contractConfig.GENERATOR_URL}/${contractAddress.toLowerCase()}/${token.data.token.tokenId}`}
+              target={"_blank"}
+              sx={{
+                textDecoration: "none",
+                '&:hover': {
+                  textDecoration: "none",
+                  boxShadow: `0px 0px 10px 1px ${backgroundConfig.colors.shadowSecondary}66, 0px 0px 10px 1px ${backgroundConfig.colors.shadowSecondary}66 inset`,
+                },
+                display: "flex",
+                gap: "5px",
+                boxShadow: `0px 0px 10px 1px ${backgroundConfig.colors.shadowPrimary}66, 0px 0px 10px 1px ${backgroundConfig.colors.shadowPrimary}66 inset`
+              }}
+            >
+              <VisibilityIcon
                 sx={{
-                  fontSize: 14,
-                  textTransform: "none",
-                  minWidth: [0, 0, "64px"],
-                  padding: [0, 0, "default"]
+                  color: backgroundConfig.colors.primary
                 }}
-                onClick={() => {
-                  const generatorUrl = contractConfig?.GENERATOR_URL
-                  window.open(`${generatorUrl}/${contractAddress?.toLowerCase()}/${token.tokenId}`)
-                }}
-                >
-                <Typography fontSize="14px" display={["none", "none", "block"]}>
-                  Live view
-                </Typography>
-              </Button>
-              <Button
-                startIcon={<ImageIcon sx={{color: "#666"}}/>}
+              />
+              <CustomTypography text={"Live"} fontSize={"15px"}/>
+            </Link>
+
+            <Link
+              href={`${contractConfig.MEDIA_URL}/${token.data.token.tokenId}.png`}
+              target={"_blank"}
+              sx={{
+                textDecoration: "none",
+                '&:hover': {
+                  textDecoration: "none",
+                  boxShadow: `0px 0px 10px 1px ${backgroundConfig.colors.shadowSecondary}66, 0px 0px 10px 1px ${backgroundConfig.colors.shadowSecondary}66 inset`,
+                },
+                display: "flex",
+                gap: "5px",
+                boxShadow: `0px 0px 10px 1px ${backgroundConfig.colors.shadowPrimary}66, 0px 0px 10px 1px ${backgroundConfig.colors.shadowPrimary}66 inset`
+              }}
+            >
+              <ImageIcon
                 sx={{
-                  fontSize: 14,
-                  textTransform: "none",
-                  marginLeft: [1, 1, 2],
-                  minWidth: [0, 0, "64px"],
-                  padding: [0, 0, "default"]
+                  color: backgroundConfig.colors.primary
                 }}
-                onClick={() => {
-                  const mediaUrl = contractConfig?.MEDIA_URL
-                  window.open(`${mediaUrl}/${token.tokenId}.png`)
-                }}
-                >
-                <Typography fontSize="14px" display={["none", "none", "block"]}>
-                  Image
-                </Typography>
-              </Button>
-              <Button
-                startIcon={<CreateIcon sx={{color: "#666"}}/>}
+              />
+              <CustomTypography text={"Image"} fontSize={"15px"}/>
+            </Link>
+
+            <Link
+              onClick={() => setShowEmbroideryDownloader(true)}
+              sx={{
+                textDecoration: "none",
+                '&:hover': {
+                  textDecoration: "none",
+                  boxShadow: `0px 0px 10px 1px ${backgroundConfig.colors.shadowSecondary}66, 0px 0px 10px 1px ${backgroundConfig.colors.shadowSecondary}66 inset`,
+                },
+                display: "flex",
+                gap: "5px",
+                boxShadow: `0px 0px 10px 1px ${backgroundConfig.colors.shadowPrimary}66, 0px 0px 10px 1px ${backgroundConfig.colors.shadowPrimary}66 inset`
+              }}
+            >
+              <ImageIcon
                 sx={{
-                  fontSize: 14,
-                  textTransform: "none",
-                  marginLeft: [1, 1, 2],
-                  minWidth: [0, 0, "64px"],
-                  padding: [0, 0, "default"]
+                  color: backgroundConfig.colors.primary
                 }}
-                onClick={() => {
-                  // const embroideryUrl = contractConfig?.EMBROIDERY_URL
-                  // window.open(`${embroideryUrl}/${contractAddress?.toLowerCase()}/${token.tokenId}.pes?width_mm=400&height_mm=400`)
-                  setShowEmbroideryDownloader(true);
-                }}
-              >
-                <Typography fontSize="14px" display={["none", "none", "block"]}>
-                  Embroidery
-                </Typography>
-              </Button>
-            </Box>
+              />
+              <CustomTypography text={"Embroidery"} fontSize={"15px"}/>
+            </Link>
+
+
           </Box>
-        </Grid>
-        <Grid item md={4}>
-          <Typography fontSize="16px" mb={4}>
-            Minted {moment.unix(token.createdAt).format("LL")}
-          </Typography>
-          <Typography variant="h1">
-            {token.project.name} #{token.invocation}
-          </Typography>
-          <Typography variant="h6">
-            {token.project.artistName}
-          </Typography>
-          <Box>
-            <Box>
-              <Button
-                endIcon={<ArrowForwardIcon />}
-                onClick={() => {
-                  window.open(`https://etherscan.io/token/${contractAddress?.toLowerCase()}?a=${token.tokenId}`)
-                }}
-                >
-                <Typography fontSize="14px" sx={{textTransform: "none"}}>
-                  View on Etherscan
-                </Typography>
-              </Button>
-            </Box>
-            <Box>
-              <Button
-                endIcon={<ArrowForwardIcon />}
-                onClick={() => {
-                  window.open(`https://opensea.io/assets/ethereum/${contractAddress?.toLowerCase()}/${token.tokenId}`)
-                }}
-                >
-                <Typography fontSize="14px" sx={{textTransform: "none"}}>
-                  View on OpenSea
-                </Typography>
-              </Button>
-            </Box>
+        </Box>
+
+        <Box
+          sx={{
+            marginTop: "20px",
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center"
+          }}
+        >
+
+          <CustomTypography
+            text={`${token.data.token.project.name} #${token.data.token.invocation} by ${token.data.token.project.artistName}`}
+            fontSize={"25px"}
+          />
+
+          <Box
+            sx={{
+              paddingY: "30px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center"
+            }}
+          >
+            <CustomTypography
+              text={`Minted ${moment.unix(token.data.token.createdAt).format("LL")}`}
+              fontSize={"20px"}
+            />
+            <Link
+              href={`/user/${token.data.token.owner.id}`}
+              sx={{
+                textDecoration: "none",
+                '&:hover': {
+                  textDecoration: "none"
+                }
+              }}
+            >
+              <CustomTypography
+                text={`Owned by ${ensName.data || shortAddress}`}
+                fontSize={"20px"}
+              />
+            </Link>
           </Box>
-        </Grid>
-      </Grid>
-      <Grid container spacing={2} mt={4} mb={4}>
-        <Grid item md={6}>
-          <TokenTraits contractAddress={contractAddress} tokenId={token.tokenId}/>
-        </Grid>
-      </Grid>
+
+          <Link
+            href={`https://etherscan.io/token/${contractAddress?.toLowerCase()}?a=${token.data.token.tokenId}`}
+            target={"_blank"}
+            sx={{
+              textDecoration: "none",
+              '&:hover': {
+                textDecoration: "none"
+              }
+            }}
+          >
+            <CustomTypography
+              text={`View on Etherscan`}
+              fontSize={"18px"}
+            />
+          </Link>
+          <Link
+            href={`https://opensea.io/assets/ethereum/${contractAddress?.toLowerCase()}/${token.data.token.tokenId}`}
+            target={"_blank"}
+            sx={{
+              textDecoration: "none",
+              '&:hover': {
+                textDecoration: "none"
+              }
+            }}
+          >
+            <CustomTypography
+              text={`View on OpenSea`}
+              fontSize={"18px"}
+            />
+          </Link>
+
+          <Box
+            sx={{
+              paddingTop: "30px"
+            }}
+          >
+            <TokenTraits contractAddress={contractAddress} tokenId={token.data.token.tokenId}/>
+          </Box>
+
+        </Box>
+
+      </Box>
 
 
       <Fade in={showEmbroideryDownloader} timeout={500}>
@@ -224,7 +316,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
                   <Close/>
                 </Button>
               </Box>
-              <EmbroideryDownloader baseUrl={`${contractConfig?.EMBROIDERY_URL}/${contractAddress?.toLowerCase()}/${token.tokenId}`}/>
+              <EmbroideryDownloader baseUrl={`${contractConfig?.EMBROIDERY_URL}/${contractAddress?.toLowerCase()}/${token.data.token.tokenId}`}/>
             </Box>
           </Box>
         </Box>

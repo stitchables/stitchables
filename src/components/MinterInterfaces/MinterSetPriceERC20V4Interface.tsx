@@ -1,12 +1,14 @@
 import { useState } from "react"
 import { useAccount, useContractReads } from "wagmi"
-import { BigNumber } from "ethers"
+import {BigNumber, utils} from "ethers"
 import { Box } from "@mui/material"
 import GenArt721CoreV3_EngineABI from "abi/V3/GenArt721CoreV3_Engine.json"
 import MinterSetPriceERC20V4ABI from "abi/V3/MinterSetPriceERC20V4.json"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
 import MinterSetPriceERC20V4Button from "components/MinterButtons/MinterSetPriceERC20V4Button"
+import CustomTypography from "../CustomTypography";
+import MinterSetPriceV4Button from "../MinterButtons/MinterSetPriceV4Button";
 
 interface Props {
   coreContractAddress: string,
@@ -80,37 +82,44 @@ const MinterSetPriceERC20V4Interface = (
   const anyoneCanMint = isNotArtist && priceIsConfigured && !isSoldOut && !isPaused
 
   return (
-    <Box>
-      <MintingProgress
-        invocations={invocations}
-        maxInvocations={maxInvocations}
-        maxHasBeenInvoked={maxHasBeenInvoked}
-      />
-      {
-        priceIsConfigured &&
-        (
-          <MintingPrice
-            startPriceWei={currentPriceWei}
-            currentPriceWei={currentPriceWei}
-            endPriceWei={currentPriceWei}
-            currencySymbol={currencySymbol}
-          />
-        )
-      }
-      <MinterSetPriceERC20V4Button
-        coreContractAddress={coreContractAddress}
-        mintContractAddress={mintContractAddress}
-        projectId={projectId}
-        priceWei={currentPriceWei}
-        currencySymbol={currencySymbol}
-        currencyAddress={currencyAddress}
-        isConnected={account.isConnected}
-        artistCanMint={artistCanMint}
-        anyoneCanMint={anyoneCanMint}
-        scriptAspectRatio={scriptAspectRatio}
-        isPaused={isPaused}
-        isSoldOut={isSoldOut}
-      />
+    <Box
+      sx={{
+        width: "100%"
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "space-evenly"
+        }}
+      >
+        <CustomTypography text={`${invocations} / ${maxInvocations} minted`} fontSize={"20px"}/>
+        <CustomTypography text={`Fixed Price: ${utils.formatEther(currentPriceWei.toString())} ETH`} fontSize={"20px"}/>
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          paddingY: "30px"
+        }}
+      >
+        <MinterSetPriceERC20V4Button
+          coreContractAddress={coreContractAddress}
+          mintContractAddress={mintContractAddress}
+          projectId={projectId}
+          priceWei={currentPriceWei}
+          currencySymbol={currencySymbol}
+          currencyAddress={currencyAddress}
+          isConnected={account.isConnected}
+          artistCanMint={artistCanMint}
+          anyoneCanMint={anyoneCanMint}
+          scriptAspectRatio={scriptAspectRatio}
+          isPaused={isPaused}
+          isSoldOut={isSoldOut}
+        />
+      </Box>
     </Box>
   )
 }

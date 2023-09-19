@@ -7,10 +7,11 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow, Box
 } from "@mui/material"
 import Loading from "components/Loading"
 import useTokenTraits from "hooks/useTokenTraits"
+import CustomTypography from "./CustomTypography";
 
 interface Props {
   contractAddress: string
@@ -18,60 +19,96 @@ interface Props {
 }
 
 const TokenTraits = ({ contractAddress, tokenId }: Props) => {
-  const { loading, error, data } = useTokenTraits(contractAddress, tokenId)
-  const traits = data?.traits?.filter((t:Trait) => t.value.indexOf('All') === -1)
+  const tokenTraits = useTokenTraits(contractAddress, tokenId)
+  const traits = tokenTraits.data?.traits?.filter((t:Trait) => t.value.indexOf('All') === -1)
 
-  if (loading) {
-    return <Loading/>
-  }
-
-  if (error) {
+  if (tokenTraits.loading || tokenTraits.loading) {
     return (
-      <Alert severity="error">
-        Error loading traits
-      </Alert>
+      <Box>
+        <Loading/>
+      </Box>
     )
   }
 
-  return traits && traits.length > 0 && (
-    <TableContainer sx={{marginBottom: 4}}>
-      <Typography variant="h6" mb={2}>Features</Typography>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <Typography fontWeight={600}>
-                Feature
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Typography fontWeight={600}>
-                Value
-              </Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {traits.map((trait:Trait) => {
-            const p = trait.value.split(":")
-            return (
-              <TableRow key={p[0]}>
-                <TableCell>
-                  <Typography>
-                    {p[0]}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography>
-                    {p[1]}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            )
-          })}
-        </TableBody>
-      </Table>
-    </TableContainer>
+  if (tokenTraits.error || tokenTraits.error) {
+    return (
+      <Box>
+        <Alert severity="error">
+          Error loading token traits
+        </Alert>
+      </Box>
+    )
+  }
+
+  if (!traits) {
+    return (
+      <Box>
+        <Alert severity="error">
+          No token traits found
+        </Alert>
+      </Box>
+    )
+  }
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center"
+      }}
+    >
+      <CustomTypography text={"Features"} fontSize={"20px"}/>
+      {
+        traits.map((trait: Trait) => {
+          const split = trait.value.split(":")
+          return (
+            <Box key={trait.value}>
+              <CustomTypography text={`${split[0]}: ${split[1]}`} fontSize={"18px"}/>
+            </Box>
+          )
+        })
+      }
+    </Box>
+    // <CustomTypography text={"Traits"} fontSize={"20px"}/>
+    // <TableContainer sx={{marginBottom: 4}}>
+    //   <Typography variant="h6" mb={2}>Features</Typography>
+    //   <Table>
+    //     <TableHead>
+    //       <TableRow>
+    //         <TableCell>
+    //           <Typography fontWeight={600}>
+    //             Feature
+    //           </Typography>
+    //         </TableCell>
+    //         <TableCell>
+    //           <Typography fontWeight={600}>
+    //             Value
+    //           </Typography>
+    //         </TableCell>
+    //       </TableRow>
+    //     </TableHead>
+    //     <TableBody>
+    //       {traits.map((trait:Trait) => {
+    //         const p = trait.value.split(":")
+    //         return (
+    //           <TableRow key={p[0]}>
+    //             <TableCell>
+    //               <Typography>
+    //                 {p[0]}
+    //               </Typography>
+    //             </TableCell>
+    //             <TableCell>
+    //               <Typography>
+    //                 {p[1]}
+    //               </Typography>
+    //             </TableCell>
+    //           </TableRow>
+    //         )
+    //       })}
+    //     </TableBody>
+    //   </Table>
+    // </TableContainer>
   )
 }
 

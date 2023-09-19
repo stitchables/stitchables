@@ -14,7 +14,7 @@ const CustomTypography = ({text, fontSize}: Props) => {
       color={backgroundConfig.colors.primary}
       sx={{
         fontSize: {fontSize},
-        textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
+        textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px, ${backgroundConfig.colors.shadowPrimary} 0px 0px 20px`,
         '&:hover': {
           textShadow: `${backgroundConfig.colors.shadowSecondary} 0px 0px 5px`,
         }
