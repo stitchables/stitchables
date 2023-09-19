@@ -24,7 +24,7 @@ const Footer = () => {
         }}
       >
         <Link
-          href={"termsOfService"}
+          href={"/termsOfService"}
           sx={{
             textDecoration: "none",
             '&:hover': {
@@ -35,7 +35,7 @@ const Footer = () => {
           <CustomTypography text={"Terms of Service"} fontSize={"18px"}/>
         </Link>
         <Link
-          href={"privacyPolicy"}
+          href={"/privacyPolicy"}
           sx={{
             textDecoration: "none",
             '&:hover': {
