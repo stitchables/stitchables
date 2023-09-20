@@ -79,11 +79,4 @@ const theme = createTheme({
   }
 })
 
-theme.typography.h1 = {
-  fontSize: "25px"
-}
-theme.typography.h2 = {
-  fontSize: "23px"
-}
-
 export default theme

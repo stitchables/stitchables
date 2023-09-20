@@ -120,6 +120,20 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
             alignItems: "center"
           }}
         >
+
+          {
+            contractConfig.EDIT_PROJECT_URL && address?.toLowerCase() === project.data.project.artistAddress &&
+            (
+              <Box sx={{display: "flex", justifyContent: "center", paddingBottom: "25px"}}>
+                <EditProjectButton
+                  contractAddress={contractAddress}
+                  projectId={project.data.project.projectId}
+                  editProjectUrl={contractConfig?.EDIT_PROJECT_URL}
+                />
+              </Box>
+            )
+          }
+
           <MintingInterfaceFilter
             contractVersion={contractConfig?.CONTRACT_VERSION}
             coreContractAddress={contractAddress}

@@ -19,6 +19,7 @@ import useCountProjects from "hooks/useCountProjects"
 import {BackgroundContext} from "./Providers";
 import TokenImage from "./TokenImage";
 import CustomPagination from "./CustomPagination";
+import CustomTypography from "./CustomTypography";
 
 const Projects = () => {
 
@@ -151,15 +152,7 @@ const Projects = () => {
                     alignItems: "center"
                   }}
                 >
-                  <Typography
-                    variant={"h2"}
-                    color={backgroundConfig.colors.primary}
-                    sx={{
-                      textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
-                    }}
-                  >
-                    {project.name}
-                  </Typography>
+                  <CustomTypography text={project.name} fontSize={"23px"}/>
                 </Box>
 
                 <Box
