@@ -75,7 +75,6 @@ const Projects = () => {
     )
   }
 
-  console.log(countBoxesX)
   const countEmptyBoxes = countBoxesX - (projects.data.projects.length - Math.floor((projects.data.projects.length - 1) / countBoxesX) * countBoxesX)
   const emptyBoxes = []
   for (let i = 0; i < countEmptyBoxes; i++) {

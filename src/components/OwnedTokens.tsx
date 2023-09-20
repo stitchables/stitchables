@@ -48,14 +48,6 @@ const OwnedTokens = ({contractAddress, projectId, walletAddress, aspectRatio}: P
   const ownedTokens = useOwnedTokens(projectId, walletAddress, {first, skip, orderDirection})
   const countOwnedTokens = useCountOwnedTokens(projectId, walletAddress)
 
-  console.log(currentPage)
-  // const { items } = usePagination({
-  //   count: Math.ceil(countOwnedTokens.data / OWNED_TOKENS_PER_PAGE),
-  //   onChange: (event, page) => {
-  //     setCurrentPage(page - 1)
-  //   }
-  // })
-
   if (ownedTokens.loading || countOwnedTokens.loading) {
     return (
       <Box>
