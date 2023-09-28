@@ -23,7 +23,7 @@ import useWindowSize from "hooks/useWindowSize"
 import { getContractConfigByAddress } from "utils/contractInfoHelper";
 import EmbroideryDownloader from "./EmbroideryDownloader";
 import {useContext, useState} from "react";
-import {Close, Instagram} from "@mui/icons-material";
+import {Close, Download, Instagram} from "@mui/icons-material";
 import CustomTypography from "./CustomTypography";
 import {BackgroundContext} from "./Providers";
 import {useEnsName} from "wagmi";
@@ -183,7 +183,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
                 boxShadow: `0px 0px 10px 1px ${backgroundConfig.colors.shadowPrimary}66, 0px 0px 10px 1px ${backgroundConfig.colors.shadowPrimary}66 inset`
               }}
             >
-              <ImageIcon
+              <Download
                 sx={{
                   color: backgroundConfig.colors.primary
                 }}
