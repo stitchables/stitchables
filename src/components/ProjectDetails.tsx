@@ -109,7 +109,17 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
             alignItems: "flex-start"
           }}
         >
-          <TokenView contractAddress={contractAddress} tokenId={project.data.project.tokens[0].tokenId} width={600} aspectRatio={project.data.project.aspectRatio} live={true}/>
+          {
+            project.data.project.tokens[0] ? (
+              <TokenView
+                contractAddress={contractAddress}
+                tokenId={project.data.project.tokens[0].tokenId}
+                width={600}
+                aspectRatio={project.data.project.aspectRatio}
+                live={true}
+              />
+            ) : <Loading/>
+          }
         </Box>
 
         <Box
@@ -160,16 +170,20 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
                 fontSize={"20px"}
               />
             </Box>
-            <Box
-              sx={{
-                paddingX: "40px"
-              }}
-            >
-              <CustomTypography
-                text={`Script: ${parseScriptTypeAndVersion(project.data.project.scriptTypeAndVersion)}`}
-                fontSize={"20px"}
-              />
-            </Box>
+            {
+              project.data.project.scriptTypeAndVersion ? (
+                <Box
+                  sx={{
+                    paddingX: "40px"
+                  }}
+                >
+                  <CustomTypography
+                    text={`Script: ${parseScriptTypeAndVersion(project.data.project.scriptTypeAndVersion)}`}
+                    fontSize={"20px"}
+                  />
+                </Box>
+              ) : null
+            }
           </Box>
 
           <ReactMarkdown
