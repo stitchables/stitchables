@@ -26,7 +26,7 @@ const TokenView = ({
   const height = width / aspectRatio
   return (
     <Box width={String(width)+"px"} height={String(height)+"px"}>
-      <Card sx={{borderRadius: 0, boxShadow: 0}}>
+      <Card sx={{borderRadius: 0, boxShadow: 0, backgroundColor: "transparent"}}>
         {
           live ?
           (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import {useState, useEffect, useRef, useContext} from "react"
 import {
   Box,
   Typography,
@@ -16,114 +16,123 @@ import OwnedTokens from "components/OwnedTokens"
 import useOwnedProjects from "hooks/useOwnedProjects"
 import useCountOwnedProjects from "hooks/useCountOwnedProjects"
 import { parseAspectRatio } from "utils/scriptJSON"
+import useWindowSize from "../hooks/useWindowSize";
+import {BackgroundContext} from "./Providers";
+import CustomTypography from "./CustomTypography";
+import CustomPagination from "./CustomPagination";
 
 interface Props {
   walletAddress: string
 }
 
 const OwnedProjects = ({ walletAddress }: Props) => {
-  const [countOwnedProjects, setCountOwnedProjects] = useState(0)
+
+  const backgroundConfig = useContext(BackgroundContext)
+
   const [currentPage, setCurrentPage] = useState(0)
+  const [orderDirection, setOrderDirection] = useState<OrderDirection>(OrderDirection.DESC)
+
   const skip = currentPage * PROJECTS_PER_PAGE
   const first = PROJECTS_PER_PAGE
-  const [orderDirection, setOrderDirection] = useState<OrderDirection>(OrderDirection.DESC)
-  const { loading, error, data } = useOwnedProjects(walletAddress, {skip, first, orderDirection})
-  const [filteredProjects, setFilteredProjects] = useState<any[]>([])
-  const countOwnedProjectsResponse = useCountOwnedProjects(walletAddress)
 
-  useEffect(() => {
-    setFilteredProjects(data?.projects?.filter((project: { tokens: string | any[] }) => {
-      return project.tokens.length > 0
-    }))
-    setCountOwnedProjects(countOwnedProjectsResponse.data?.projects?.filter((project: { tokens: string | any[] }) => {
-      return project.tokens.length > 0
-    }).length)
-  }, [data, countOwnedProjectsResponse])
+  const ownedProjects = useOwnedProjects(walletAddress, {skip, first, orderDirection})
+  const countOwnedProjects = useCountOwnedProjects(walletAddress)
+
+  if (ownedProjects.loading || countOwnedProjects.loading) {
+    return (
+      <Box>
+        <Loading/>
+      </Box>
+    )
+  }
+
+  if (ownedProjects.error || countOwnedProjects.error) {
+    return (
+      <Box>
+        <Alert severity="error">
+          Error loading projects
+        </Alert>
+      </Box>
+    )
+  }
+
+  if (ownedProjects.data.length === 0 || countOwnedProjects.data === 0) {
+    return (
+      <Box>
+        <Alert severity="error">
+          No projects found
+        </Alert>
+      </Box>
+    )
+  }
 
   return (
     <Box>
-      <Box sx={{display:"flex", justifyContent: "space-between", alignItems: "flex-end"}}>
-        <Typography></Typography>
-        <Box sx={{display: "flex", alignItems: "center", marginRight: "25px"}}>
-          <Box>
-            {
-              !error && !loading && filteredProjects?.length > 0 &&
-              (
-              <FormControl fullWidth sx={{marginBottom: "50px"}}>
-                <NativeSelect
-                  value={orderDirection}
-                  sx={{fontSize: 14}}
-                  onChange={(e) => {
-                    setCurrentPage(0)
-                    setOrderDirection(e.target.value as OrderDirection)
-                  }}
-                >
-                  <option value={OrderDirection.DESC}>Newest</option>
-                  <option value={OrderDirection.ASC}>Oldest</option>
-                </NativeSelect>
-              </FormControl>
-              )
-            }
+      {
+        ownedProjects.data.map((project: Project) => (
+          <Box
+            key={project.id}
+            sx={{
+              borderStyle: "solid",
+              borderColor: `${backgroundConfig.colors.primary}`,
+              borderWidth: `3px`,
+              margin: "-3px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center"
+            }}
+          >
+
+            <Box
+              sx={{
+                width: "calc(100% + 6px)",
+                paddingY: "10px",
+                borderStyle: "solid",
+                borderColor: `${backgroundConfig.colors.primary}`,
+                borderWidth: `3px`,
+                margin: "-3px",
+                display: "flex",
+                justifyContent: "center"
+              }}
+            >
+              <Link
+                href={`/project/${project.contract.id}/${project.projectId}`}
+                underline="hover"
+                sx={{
+                  textDecoration: "none",
+                  '&:hover': {
+                    textDecoration: "none"
+                  }
+                }}
+              >
+                <CustomTypography
+                  text={`${project.name} by ${project.artistName}`}
+                  fontSize={"36px"}
+                />
+              </Link>
+            </Box>
+
+            <OwnedTokens
+              contractAddress={project.contract.id}
+              projectId={project.id}
+              walletAddress={walletAddress}
+              aspectRatio={project.aspectRatio || parseAspectRatio(project.scriptJSON)}
+            />
+
           </Box>
-        </Box>
-      </Box>
-      <Box sx={{marginTop: "-100px"}}>
-        {
-          loading ?
-          (
-            <Box marginTop={10}>
-              <Loading/>
-            </Box>
-          ) :
-          error ?
-          (
-            <Box marginTop={10}>
-              <Alert severity="error">
-                Error loading projects
-              </Alert>
-            </Box>
-          ) :
-          filteredProjects?.length > 0 ?
-          (
-            <Grid container spacing={3} sx={{margin: "32px 0"}}>
-              {
-                filteredProjects && (
-                  filteredProjects.map((project: Project) => (
-                    <Grid item md={12} key={project.id}>
-                      <Link href={`/project/${project.contract.id}/${project.projectId}`} underline="hover">
-                        <Typography variant="h1" fontSize={36}>{project.name} by {project.artistName}</Typography>
-                      </Link>
-                      <OwnedTokens contractAddress={project.contract.id} projectId={project.id} walletAddress={walletAddress} aspectRatio={project.aspectRatio || parseAspectRatio(project.scriptJSON)}/>
-                    </Grid>
-                  ))
-                )
-              }
-            </Grid>
-          ) :
-          filteredProjects?.length === 0 ? (
-            <Box marginTop={10}>
-              <Alert severity="info">
-                No projects found
-              </Alert>
-            </Box>
-          ) :
-          null
-        }
-        {
-          !error && !loading && filteredProjects?.length > 0 && (
-            <Box sx={{display: "flex", justifyContent: "center", marginBottom: "50px"}}>
-              <Pagination
-                count={Math.ceil(countOwnedProjects/PROJECTS_PER_PAGE)}
-                color="primary"
-                page={currentPage + 1}
-                onChange={(event, page) => {
-                  window.scrollTo(0, 0)
-                  setCurrentPage(page - 1)
-                }}/>
-            </Box>
-          )
-        }
-      </Box>
+        ))
+      }
+
+      <CustomPagination
+        count={Math.ceil(countOwnedProjects.data / PROJECTS_PER_PAGE)}
+        page={currentPage + 1}
+        onChange={(event, page) => {
+          window.scrollTo(0, 0)
+          setCurrentPage(Math.min(Math.max(page - 1, 0), Math.ceil(countOwnedProjects.data / PROJECTS_PER_PAGE) - 1))
+        }}
+        show={Math.ceil(countOwnedProjects.data / PROJECTS_PER_PAGE) > 1}
+      />
+
     </Box>
   )
 }

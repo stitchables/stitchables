@@ -56,6 +56,7 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: [
+      "Pouf",
       "Raleway",
       "Geometric",
       "Segoe UI",
@@ -77,10 +78,5 @@ const theme = createTheme({
     }
   }
 })
-
-theme.typography.h1 = {
-  fontFamily: "Archivo Black",
-  fontWeight: "400"
-}
 
 export default theme

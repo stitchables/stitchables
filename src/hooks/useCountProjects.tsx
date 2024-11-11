@@ -14,7 +14,9 @@ const countProjectsQuery = () => `
   }`
 
 const useCountProjects = () => {
-  const { loading, error, data } = useQuery(gql(countProjectsQuery()))
+  let { loading, error, data } = useQuery(gql(countProjectsQuery()))
+
+  if (data) data = data.projects.length
 
   return {
     loading,

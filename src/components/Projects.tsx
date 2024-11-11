@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import {useState, useEffect, useContext, useRef} from "react"
 import {
   Box,
   Typography,
@@ -6,7 +6,7 @@ import {
   FormControl,
   NativeSelect,
   Pagination,
-  Grid
+  Grid, Link
 } from "@mui/material"
 import useTheme from "@mui/material/styles/useTheme"
 import { PROJECTS_PER_PAGE } from "config"
@@ -16,119 +16,224 @@ import Loading from "components/Loading"
 import useProjects from "hooks/useProjects"
 import useWindowSize from "hooks/useWindowSize"
 import useCountProjects from "hooks/useCountProjects"
+import {BackgroundContext} from "./Providers";
+import TokenImage from "./TokenImage";
+import CustomPagination from "./CustomPagination";
+import CustomTypography from "./CustomTypography";
 
 const Projects = () => {
-  const theme = useTheme()
-  const windowSize = useWindowSize()
-  const [countProjects, setCountProjects] = useState(0)
+
+  const projectBoxWidth = 450
+  const projectBoxHeight = 800
+  const projectBoxBorderWidth = 3
+  const projectTitleHeight = 65
+  const projectDetailsHeight = 100
+
+  const backgroundConfig = useContext(BackgroundContext)
+
+  const countProjects = useCountProjects()
   const [currentPage, setCurrentPage] = useState(0)
+  const [orderDirection, setOrderDirection] = useState<OrderDirection>(OrderDirection.DESC)
   const skip = currentPage * PROJECTS_PER_PAGE
   const first = PROJECTS_PER_PAGE
-  const [orderDirection, setOrderDirection] = useState<OrderDirection>(OrderDirection.DESC)
-  const { loading, error, data } = useProjects({skip, first, orderDirection})
-  const countProjectsResponse = useCountProjects()
+  const projects = useProjects({skip, first, orderDirection})
 
+  const size = useWindowSize()
+  const refContainer = useRef<HTMLInputElement>()
+  const [countBoxesX, setCountBoxesX] = useState(1)
   useEffect(() => {
-    if (countProjectsResponse.data?.projects?.length) {
-      setCountProjects(countProjectsResponse.data?.projects?.length)
+    if (refContainer.current) {
+      const bb = refContainer.current.getBoundingClientRect();
+      setCountBoxesX(Math.floor(bb.width / (projectBoxWidth - projectBoxBorderWidth)))
     }
-  }, [countProjectsResponse.data?.projects?.length])
+  }, [size])
 
-  let width = 280
-  const maxColumns = 2
-  if (windowSize && !isNaN(windowSize.width)) {
-    width = windowSize.width > theme.breakpoints.values.md
-      ? (Math.min(windowSize.width, 1200)- 96)/maxColumns
-        : windowSize.width > theme.breakpoints.values.sm
-          ? windowSize.width - 64
-          : windowSize.width - 48
+  if (projects.loading || countProjects.loading) {
+    return (
+      <Box ref={refContainer}>
+        <Loading/>
+      </Box>
+    )
+  }
+
+  if (projects.error || countProjects.error) {
+    return (
+      <Box ref={refContainer}>
+        <Alert severity="error">
+          Error loading projects
+        </Alert>
+      </Box>
+    )
+  }
+
+  if (projects.data.length === 0 || countProjects.data === 0) {
+    return (
+      <Box ref={refContainer}>
+        <Alert severity="error">
+          No projects found
+        </Alert>
+      </Box>
+    )
+  }
+
+  const countEmptyBoxes = countBoxesX - (projects.data.projects.length - Math.floor((projects.data.projects.length - 1) / countBoxesX) * countBoxesX)
+  const emptyBoxes = []
+  for (let i = 0; i < countEmptyBoxes; i++) {
+    emptyBoxes.push(
+      <Box
+        key={`empty${i}`}
+        sx={{
+          width: `${projectBoxWidth}px`,
+          height: `${projectBoxHeight}px`,
+          borderStyle: "solid",
+          borderColor: `${backgroundConfig.colors.primary}`,
+          borderWidth: `${projectBoxBorderWidth}px`,
+          margin: `${-0.5 * projectBoxBorderWidth}px`,
+          display: "flex",
+          flexDirection: "column",
+          '&:hover': {
+            background: "rgba(0, 0, 0, 0.2)"
+          }
+        }}
+      />
+    )
   }
 
   return (
     <Box>
-      <Box sx={{display:"flex", justifyContent: "space-between", alignItems: "flex-end"}}>
-        <Typography></Typography>
-        <Box sx={{display: "flex", alignItems: "center", marginRight: "25px"}}>
-          <Box>
-            {
-              !error && !loading && data?.projects?.length > 0 &&
-              (
-              <FormControl fullWidth sx={{marginBottom: "50px"}}>
-                <NativeSelect
-                  value={orderDirection}
-                  sx={{fontSize: 14}}
-                  onChange={(e) => {
-                    setCurrentPage(0)
-                    setOrderDirection(e.target.value as OrderDirection)
+      <Box
+        ref={refContainer}
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center"
+        }}
+      >
+        {
+          projects.data.projects.map((project: Project) => (
+
+            <Link
+              key={`${project.id}`}
+              href={`/project/${project.contract.id}/${project.projectId}`}
+              sx={{
+                textDecoration: "none",
+                '&:hover': {
+                  textDecoration: "none"
+                }
+              }}
+            >
+              <Box
+                sx={{
+                  width: `${projectBoxWidth}px`,
+                  height: `${projectBoxHeight}px`,
+                  borderStyle: "solid",
+                  borderColor: `${backgroundConfig.colors.primary}`,
+                  borderWidth: `${projectBoxBorderWidth}px`,
+                  margin: `${-0.5 * projectBoxBorderWidth}px`,
+                  display: "flex",
+                  flexDirection: "column",
+                  '&:hover': {
+                    background: "rgba(0, 0, 0, 0.2)"
+                  }
+                }}
+              >
+
+                <Box
+                  sx={{
+                    width: `calc(100% + ${2 * projectBoxBorderWidth}px)`,
+                    height: `${projectTitleHeight}px`,
+                    borderStyle: "solid",
+                    borderColor: `${backgroundConfig.colors.primary}`,
+                    borderWidth: `${projectBoxBorderWidth}px`,
+                    margin: `${-projectBoxBorderWidth}px`,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
                   }}
                 >
-                  <option value={OrderDirection.DESC}>Newest</option>
-                  <option value={OrderDirection.ASC}>Oldest</option>
-                </NativeSelect>
-              </FormControl>
-              )
-            }
-          </Box>
-        </Box>
-      </Box>
-      <Box sx={{marginTop: "-100px"}}>
-        {
-          loading ?
-          (
-            <Box marginTop={10}>
-              <Loading/>
-            </Box>
-          ) :
-          error ?
-          (
-            <Box marginTop={10}>
-              <Alert severity="error">
-                Error loading projects
-              </Alert>
-            </Box>
-          ) :
-          data?.projects?.length > 0 ?
-          (
-            <Grid container spacing={3} sx={{margin: "32px 0"}}>
-              {
-                data?.projects && (
-                  data.projects.map((project: Project) => (
-                    <Grid item md={6} key={project.id}>
-                      <ProjectPreview
-                        project={project}
-                        width={width}
-                        showDescription
-                      />
-                    </Grid>
-                  ))
-                )
-              }
-            </Grid>
-          ) :
-          data?.projects?.length === 0 ? (
-            <Box marginTop={10}>
-              <Alert severity="info">
-                No projects found
-              </Alert>
-            </Box>
-          ) :
-          null
+                  <CustomTypography text={project.name} fontSize={"23px"}/>
+                </Box>
+
+                <Box
+                  sx={{
+                    flexGrow: 1,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
+                  <TokenImage
+                    contractAddress={project.contract.id}
+                    tokenId={`${1000000 * Number(project.projectId)}`}
+                    width={350}
+                    height={350 / project.aspectRatio}
+                  />
+                </Box>
+
+                <Box
+                  sx={{
+                    width: `calc(100% + ${2 * projectBoxBorderWidth}px)`,
+                    height: `${projectDetailsHeight}px`,
+                    borderStyle: "solid",
+                    borderColor: `${backgroundConfig.colors.primary}`,
+                    borderWidth: `${projectBoxBorderWidth}px`,
+                    margin: `${-projectBoxBorderWidth}px`,
+                    paddingLeft: "10px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "flex-start"
+                  }}
+                >
+                  <Typography
+                    color={backgroundConfig.colors.primary}
+                    sx={{
+                      fontSize: "20px",
+                      textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
+                    }}
+                  >
+                    {`${project.artistName}`}
+                  </Typography>
+                  <Typography
+                    color={backgroundConfig.colors.primary}
+                    sx={{
+                      fontSize: "18px",
+                      textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
+                      paddingLeft: "5px"
+                    }}
+                  >
+                    {`${project.pricePerTokenInWei.toString()} ${project.currencySymbol}`}
+                  </Typography>
+                  <Typography
+                    color={backgroundConfig.colors.primary}
+                    sx={{
+                      fontSize: "18px",
+                      textShadow: `${backgroundConfig.colors.shadowPrimary} 0px 0px 17px`,
+                      paddingLeft: "5px"
+                    }}
+                  >
+                    {`${project.invocations.toString()} of ${project.maxInvocations} minted`}
+                  </Typography>
+                </Box>
+
+              </Box>
+            </Link>
+          ))
         }
-        {
-          !error && !loading && data?.projects?.length > 0 && (
-            <Box sx={{display: "flex", justifyContent: "center", marginBottom: "50px"}}>
-              <Pagination
-                count={Math.ceil(countProjects/PROJECTS_PER_PAGE)}
-                color="primary"
-                page={currentPage + 1}
-                onChange={(event, page) => {
-                  window.scrollTo(0, 0)
-                  setCurrentPage(page - 1)
-                }}/>
-            </Box>
-          )
-        }
+        {emptyBoxes}
       </Box>
+
+      <CustomPagination
+        count={Math.ceil(countProjects.data / PROJECTS_PER_PAGE)}
+        page={currentPage + 1}
+        onChange={(event, page) => {
+          window.scrollTo(0, 0)
+          setCurrentPage(Math.min(Math.max(page - 1, 0), Math.ceil(countProjects.data / PROJECTS_PER_PAGE) - 1))
+        }}
+        show={Math.ceil(countProjects.data / PROJECTS_PER_PAGE) > 1}
+      />
+
     </Box>
   )
 }

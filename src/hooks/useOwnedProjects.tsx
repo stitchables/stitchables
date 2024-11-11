@@ -67,7 +67,9 @@ const useOwnedProjects = (walletAddress: string, params?: Params) => {
   const first = params?.first || PROJECTS_PER_PAGE
   const skip = params?.skip || 0
   const orderDirection = params?.orderDirection || OrderDirection.DESC
-  const { loading, error, data } = useQuery(gql(ownedProjectsQuery(walletAddress, { first, skip, orderDirection })))
+  let { loading, error, data } = useQuery(gql(ownedProjectsQuery(walletAddress, { first, skip, orderDirection })))
+
+  if (data) data = data.projects.filter((project: { tokens: string | any[] }) => project.tokens.length > 0)
 
   return {
     loading,

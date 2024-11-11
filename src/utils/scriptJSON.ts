@@ -30,3 +30,9 @@ export const parseScriptType = (scriptJSON: string) => {
   const scriptParams = parseJson(scriptJSON)
   return scriptParams?.type
 }
+
+export const parseScriptTypeAndVersion = (scriptTypeAndVersion: string) => {
+  let split = scriptTypeAndVersion.split("@")
+  if (split[0] === "p5") return `${split[0]}.js v${split[1]}`
+  return `${split[0]} v${split[1]}`
+}

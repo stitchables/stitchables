@@ -1,23 +1,32 @@
-import { 
-  Container, 
-  Box 
+import {
+  Container,
+  Box
 } from "@mui/material"
 
 import Header from "components/Header"
+import {useContext} from "react";
+import { BackgroundContext } from "components/Providers";
+import Footer from "./Footer";
 
 interface Props {
   children: React.ReactNode
 }
 
 const Page = ({ children }: Props) => {
+  const backgroundConfig = useContext(BackgroundContext)
   return (
-    <Box sx={{display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
+    <Box sx={{
+      paddingX: "40px",
+      display: "flex",
+      flexDirection: "column",
+      minHeight: "100vh",
+      backgroundImage: `url(${process.env.PUBLIC_URL}/media/backgrounds/bg${backgroundConfig.index}.jpg)`,
+      backgroundRepeat: "repeat",
+      backgroundSize: "600px"
+    }}>
       <Header/>
-      <main>
-        <Container sx={{paddingTop: 1}}>
-          {children}
-        </Container>
-      </main>
+      {children}
+      <Footer/>
     </Box>
   )
 }
